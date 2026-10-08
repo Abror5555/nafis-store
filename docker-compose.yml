@@ -1,0 +1,64 @@
+# Full stack in one command:  docker compose up --build
+# Store:  http://localhost:3000     Admin:  http://localhost:8000/admin/
+#
+# Optional settings go in a `.env` file next to this one (see `.env.example`).
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: nafis
+      POSTGRES_USER: nafis
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nafis}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nafis -d nafis"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgres://nafis:${POSTGRES_PASSWORD:-nafis}@db:5432/nafis
+      DJANGO_DEBUG: "False"
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-docker-demo-secret-change-me}
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,backend
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      STORE_NAME: ${STORE_NAME:-Nafis}
+      SERVE_MEDIA: "True"
+      SEED_DEMO_DATA: "true"
+      # The owner signs in with this email (it is also used as the username).
+      DJANGO_SUPERUSER_USERNAME: ${ADMIN_EMAIL:-admin@example.com}
+      DJANGO_SUPERUSER_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      DJANGO_SUPERUSER_PASSWORD: ${ADMIN_PASSWORD:-}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_ADMIN_CHAT_ID: ${TELEGRAM_ADMIN_CHAT_ID:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    volumes:
+      - media:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        API_URL: http://backend:8000
+        NEXT_PUBLIC_STORE_NAME: ${STORE_NAME:-Nafis}
+    environment:
+      API_URL: http://backend:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  media:

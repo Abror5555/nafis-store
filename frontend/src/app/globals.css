@@ -1,0 +1,205 @@
+@import "tailwindcss";
+
+/*
+ * Palette taken from the crafts themselves:
+ * porcelain glaze, cobalt and ishqor (turquoise) from Rishtan ceramics,
+ * madder red and saffron from suzani embroidery, indigo ink for text.
+ */
+@theme {
+  --color-porcelain: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-tint: #e9eef5;
+  --color-ink: #18213a;
+  --color-muted: #586178;
+  --color-line: #d9dee8;
+  --color-cobalt: #2a44a6;
+  --color-cobalt-dark: #1f3380;
+  --color-ishqor: #138a8f;
+  --color-ishqor-text: #0e6e73;
+  --color-madder: #b42f3c;
+  --color-saffron: #e2a23b;
+
+  --font-display: "Young Serif", Georgia, "Times New Roman", serif;
+  --font-sans: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-porcelain);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cobalt);
+    outline-offset: 2px;
+  }
+
+  input,
+  select,
+  textarea {
+    color: inherit;
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline-offset: 0;
+    border-color: var(--color-cobalt);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    background: var(--color-cobalt);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background-color 150ms;
+  }
+  .btn-primary:hover {
+    background: var(--color-cobalt-dark);
+  }
+  .btn-primary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-ink);
+    color: var(--color-ink);
+    font-size: 15px;
+    font-weight: 500;
+    transition:
+      background-color 150ms,
+      color 150ms;
+  }
+  .btn-secondary:hover {
+    background: var(--color-ink);
+    color: var(--color-porcelain);
+  }
+
+  .field {
+    display: block;
+    width: 100%;
+    height: 2.875rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    padding: 0 0.875rem;
+    font-size: 15px;
+  }
+  textarea.field {
+    height: auto;
+    padding: 0.75rem 0.875rem;
+  }
+
+  .field-label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+/* The one orchestrated moment: the hero plate is "painted" ring by ring. */
+.plate-ring {
+  transform-origin: 200px 200px;
+  animation: plate-ring-in 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes plate-ring-in {
+  from {
+    opacity: 0;
+    transform: scale(0.86) rotate(-12deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Feedback motion, triggered by the visitor. */
+.toast-in {
+  animation: toast-in 220ms ease-out both;
+}
+.panel-in {
+  animation: toast-in 200ms ease-out both;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate-ring,
+  .toast-in,
+  .panel-in {
+    animation: none;
+  }
+}
+
+/* The price briefly settles in when the quantity changes. */
+.price-tick {
+  animation: toast-in 180ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .price-tick {
+    animation: none;
+  }
+}
+
+/* Panel drawers and the mobile menu slide in from their edge. */
+.panel-slide {
+  animation: slide-from-left 200ms ease-out both;
+}
+.panel-slide-right {
+  animation: slide-from-right 220ms ease-out both;
+}
+@keyframes slide-from-left {
+  from {
+    transform: translateX(-24px);
+    opacity: 0;
+  }
+}
+@keyframes slide-from-right {
+  from {
+    transform: translateX(32px);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .panel-slide,
+  .panel-slide-right {
+    animation: none;
+  }
+}
