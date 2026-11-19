@@ -237,6 +237,10 @@ frontend/
 docker-compose.yml
 ```
 
+## License
+
+[MIT](LICENSE) © 2026 Abror Kushshiyev
+
 ## Author
 
 **Abror Kushshiyev**, Python and full-stack developer
